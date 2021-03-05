@@ -45,6 +45,10 @@ kubectl delete -f taskmanager-job-deployment.yaml
 # connect
 kubectl proxy
 
-# scale
+# scale manually
 kubectl scale --replicas=3 deployments/flink-taskmanager
+
+
+# scale automatically
+kubectl autoscale deployment flink-taskmanager --min=1 --max=6 --cpu-percent=80
 ```
