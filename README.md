@@ -24,6 +24,12 @@ minikube start
 # some prep
 minikube ssh 'sudo ip link set docker0 promisc on'
 
+# optional dashboard
+minikube dashboard
+
+# install metrics server (needed for autoscaler)
+minikube addons enable metrics-server
+
 
 # launch
 kubectl apply -f flink-configuration-configmap.yaml
@@ -57,10 +63,22 @@ kubectl apply -f zookeeper-deployment.yaml
 kubectl apply -f kafka-service.yaml
 kubectl apply -f kafka-deployment.yaml
 
+# launch a container for running the data generator
+kubectl run workbench --image=ubuntu:21.04 -- sleep infinity
+
+# run data generator
+mvn exec:java -Dexec.mainClass="org.apache.flink.DataGen" -Dexec.args="--topic topic --bootstrap kafka-service:9092"
+
+# delete workbench
+kubectl delete pod workbench
+
 # make kafka available locally:
 kubectl port-forward kafka-broker0-78fb8799f7-twdf6 9092:9092
 
 
 # scale automatically
-kubectl autoscale deployment flink-taskmanager --min=1 --max=6 --cpu-percent=80
+kubectl autoscale deployment flink-taskmanager --min=1 --max=6 --cpu-percent=30
+
+# remove autoscaler
+kubectl delete horizontalpodautoscalers flink-taskmanager
 ```
