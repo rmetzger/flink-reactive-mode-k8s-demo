@@ -14,10 +14,10 @@ import java.util.concurrent.atomic.AtomicLong;
 public class DataGen {
     public static void main(String[] args) throws Exception {
         ParameterTool params = ParameterTool.fromArgs(args);
-        final String topic = params.get("topic");
-        final AtomicLong sleepEvery = new AtomicLong(params.getLong("sleepEvery", 500));
+        final String topic = params.getRequired("topic");
+        final AtomicLong sleepEvery = new AtomicLong(params.getLong("sleepEvery", 1));
         Properties props = new Properties();
-        props.put("bootstrap.servers", params.get("bootstrap"));
+        props.put("bootstrap.servers", params.getRequired("bootstrap"));
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("linger.ms", 1);
@@ -34,8 +34,13 @@ public class DataGen {
                                         new ProducerRecord<>(
                                                 topic, Long.toString(i), Long.toString(i++)));
                                 if (i % sleepEvery.get() == 0) {
+                                    System.out.println(
+                                            "Sleep interval "
+                                                    + sleepEvery.get()
+                                                    + " Kafka produced: "
+                                                    + i);
                                     try {
-                                        Thread.sleep(5);
+                                        Thread.sleep(15_000);
                                     } catch (InterruptedException e) {
                                         e.printStackTrace();
                                         break;
@@ -50,7 +55,11 @@ public class DataGen {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
             System.out.println("Enter new sleep:");
-            sleepEvery.set(Long.parseLong(br.readLine()));
+            String line = br.readLine();
+            System.out.println("Read " + line);
+            if (!line.isEmpty()) {
+                sleepEvery.set(Long.parseLong(line));
+            }
         }
     }
 }

@@ -24,9 +24,6 @@ minikube start
 # some prep
 minikube ssh 'sudo ip link set docker0 promisc on'
 
-# provide job jar
-minikube mount `pwd`/TopSpeedWindowing.jar:/flink-job
-
 
 # launch
 kubectl apply -f flink-configuration-configmap.yaml
@@ -42,11 +39,26 @@ kubectl delete -f jobmanager-rest-service.yaml
 kubectl delete -f jobmanager-service.yaml
 kubectl delete -f taskmanager-job-deployment.yaml
 
-# connect
+# connect (doesn't work?!)
 kubectl proxy
+
+# connect to Flink UI
+kubectl port-forward flink-jobmanager-rp4zv 8081
 
 # scale manually
 kubectl scale --replicas=3 deployments/flink-taskmanager
+
+# probably based on: https://www.magalix.com/blog/kafka-on-kubernetes-and-deploying-best-practice
+# start zookeeper
+kubectl apply -f zookeeper-service.yaml
+kubectl apply -f zookeeper-deployment.yaml
+
+# start kafka
+kubectl apply -f kafka-service.yaml
+kubectl apply -f kafka-deployment.yaml
+
+# make kafka available locally:
+kubectl port-forward kafka-broker0-78fb8799f7-twdf6 9092:9092
 
 
 # scale automatically

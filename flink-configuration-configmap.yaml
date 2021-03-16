@@ -15,9 +15,7 @@ data:
     taskmanager.memory.process.size: 1728m  
     restart-strategy: fixeddelay
     restart-strategy.fixed-delay.attempts: 100000
-    jobmanager.scheduler: adaptive
     scheduler-mode: reactive
-    parallelism.default: 9999999
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
     rootLogger.level = INFO

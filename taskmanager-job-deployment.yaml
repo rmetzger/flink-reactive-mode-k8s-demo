@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: taskmanager
-        image: rmetzger/flink:1.13.0-reactive-timeouts-d382d0429ce544fde89aa80b2b0e6f82f91eb991-topspeed
+        image: rmetzger/flink:1.13.0-reactive-timeouts-v2-57d9b95fac95a649bd8295c294b77aeee5df12fc-kafka
+        imagePullPolicy: Always
         env:
         args: ["taskmanager"]
         ports:

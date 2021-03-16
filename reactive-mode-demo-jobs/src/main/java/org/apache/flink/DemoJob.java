@@ -26,12 +26,19 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.sink.DiscardingSink;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DemoJob {
+
+    protected static final Logger LOG = LoggerFactory.getLogger(DemoJob.class);
 
     public static void main(String[] args) throws Exception {
         ParameterTool params = ParameterTool.fromArgs(args);
         // set up the streaming execution environment
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+        env.getConfig().setGlobalJobParameters(params);
+        env.enableCheckpointing(30_000L);
 
         DataStream<String> stream =
                 env.addSource(
@@ -54,6 +61,7 @@ public class DemoJob {
         // Let's waste some CPU cycles
         @Override
         public String map(String s) throws Exception {
+            LOG.info("Received message " + s);
             double res = 0;
             for (int i = 0; i < params.getInt("iterations", 500); i++) {
                 res += Math.sin(StrictMath.cos(res)) * 2;
