@@ -30,6 +30,8 @@ minikube dashboard
 # install metrics server (needed for autoscaler)
 minikube addons enable metrics-server
 
+kubectl	create namespace reactive
+kubectl config set-context --current --namespace=reactive
 
 # launch
 kubectl apply -f flink-configuration-configmap.yaml
@@ -65,6 +67,15 @@ kubectl apply -f kafka-deployment.yaml
 
 # launch a container for running the data generator
 kubectl run workbench --image=ubuntu:21.04 -- sleep infinity
+
+# connect to workbench
+kubectl exec --stdin --tty workbench -- bash
+
+# prep
+apt update
+apt install -y maven git htop nano
+git clone https://github.com/rmetzger/flink-reactive-mode-k8s-demo.git
+mvn clean install
 
 # run data generator
 mvn exec:java -Dexec.mainClass="org.apache.flink.DataGen" -Dexec.args="--topic topic --bootstrap kafka-service:9092"
