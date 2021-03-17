@@ -15,7 +15,7 @@ spec:
           image: rmetzger/flink:1.13.0-reactive-timeouts-v2-57d9b95fac95a649bd8295c294b77aeee5df12fc-kafka
           imagePullPolicy: Always
           env:
-          args: ["standalone-job", "--job-classname", "org.apache.flink.DemoJob", "--topic", "topic", "--bootstrap.servers", "kafka-service.reactive:9092", "--group.id", "yolo"]
+          args: ["standalone-job", "--job-classname", "org.apache.flink.DemoJob", "--topic", "topic", "--bootstrap.servers", "kafka-service:9092", "--group.id", "yolo"]
           ports:
             - containerPort: 6123
               name: rpc

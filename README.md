@@ -30,7 +30,7 @@ minikube dashboard
 # install metrics server (needed for autoscaler)
 minikube addons enable metrics-server
 
-kubectl	create namespace reactive
+kubectl create namespace reactive
 kubectl config set-context --current --namespace=reactive
 
 # launch
@@ -73,7 +73,7 @@ kubectl exec --stdin --tty workbench -- bash
 
 # prep
 apt update
-apt install -y maven git htop nano
+apt install -y maven git htop nano iputils-ping
 git clone https://github.com/rmetzger/flink-reactive-mode-k8s-demo.git
 mvn clean install
 
