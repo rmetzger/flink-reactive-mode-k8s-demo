@@ -1,23 +1,22 @@
 package org.apache.flink;
 
-import org.apache.flink.api.java.utils.ParameterTool;
-
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DataGen {
     public static void main(String[] args) throws Exception {
-        ParameterTool params = ParameterTool.fromArgs(args);
-        final String topic = params.getRequired("topic");
-        final AtomicLong sleepEvery = new AtomicLong(params.getLong("sleepEvery", 1));
+        System.out.println("Args = " + Arrays.asList(args));
+        final String topic = args[0];
+        final AtomicLong sleepEvery = new AtomicLong(Long.parseLong(args[1]));
         Properties props = new Properties();
-        props.put("bootstrap.servers", params.getRequired("bootstrap"));
+        props.put("bootstrap.servers", args[2]);
         props.put("acks", "all");
         props.put("retries", 0);
         props.put("linger.ms", 1);

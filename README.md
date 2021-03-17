@@ -22,8 +22,13 @@ minikube start
 # some prep
 minikube ssh 'sudo ip link set docker0 promisc on'
 
-# optional dashboard
+# optional dashboard on Minikube
 minikube dashboard
+# dashboard on real cluster
+kubectl proxy
+http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
+kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')
+
 
 # install metrics server (needed for autoscaler)
 minikube addons enable metrics-server
@@ -76,7 +81,7 @@ git clone https://github.com/rmetzger/flink-reactive-mode-k8s-demo.git
 mvn clean install
 
 # run data generator
-mvn exec:java -Dexec.mainClass="org.apache.flink.DataGen" -Dexec.args="--topic topic --bootstrap kafka-service:9092"
+mvn exec:java -Dexec.mainClass="org.apache.flink.DataGen" -Dexec.args="topic 1 kafka-service:9092"
 
 # delete workbench
 kubectl delete pod workbench
@@ -86,7 +91,7 @@ kubectl port-forward kafka-broker0-78fb8799f7-twdf6 9092:9092
 
 
 # scale automatically
-kubectl autoscale deployment flink-taskmanager --min=1 --max=6 --cpu-percent=30
+kubectl autoscale deployment flink-taskmanager --min=1 --max=10 --cpu-percent=30
 
 # remove autoscaler
 kubectl delete horizontalpodautoscalers flink-taskmanager
