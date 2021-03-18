@@ -40,6 +40,7 @@ public class DemoJob {
         // set up the streaming execution environment
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         env.getConfig().setGlobalJobParameters(params);
+        env.disableOperatorChaining();
         env.enableCheckpointing(30_000L);
 
         DataStream<String> stream =
@@ -48,11 +49,18 @@ public class DemoJob {
                                         params.get("topic"),
                                         new SimpleStringSchema(),
                                         params.getProperties()))
-                        .setMaxParallelism(1);
+                        .setMaxParallelism(1)
+                        .name("Kafka");
 
-        stream.flatMap(new ThroughputLogger(16, params.getLong("logfreq", 10_000)));
+        stream.flatMap(new ThroughputLogger(16, params.getLong("logfreq", 10_000)))
+                .setMaxParallelism(1)
+                .name("Throughput Logger");
 
-        stream.map(new CPULoadMapper(params)).addSink(new DiscardingSink<>());
+        stream.map(new CPULoadMapper(params))
+                .name("Expensive Computation")
+                .addSink(new DiscardingSink<>())
+                .name("Sink")
+                .setParallelism(9999);
         env.execute("Rescalable Demo Job");
     }
 

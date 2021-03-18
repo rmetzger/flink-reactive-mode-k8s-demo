@@ -16,6 +16,7 @@ data:
     restart-strategy: fixeddelay
     restart-strategy.fixed-delay.attempts: 100000
     scheduler-mode: reactive
+    metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
     rootLogger.level = INFO

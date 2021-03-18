@@ -95,4 +95,10 @@ kubectl autoscale deployment flink-taskmanager --min=1 --max=10 --cpu-percent=30
 
 # remove autoscaler
 kubectl delete horizontalpodautoscalers flink-taskmanager
+
+
+# prometheus
+kubectl port-forward prometheus-server-667df6d57c-77dms 9090
+# grafana
+kubectl port-forward grafana-5df66b4d87-rkd7n 3000
 ```

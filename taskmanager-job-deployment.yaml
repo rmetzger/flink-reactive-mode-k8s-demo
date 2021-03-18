@@ -10,6 +10,9 @@ spec:
       component: taskmanager
   template:
     metadata:
+      annotations:
+        prometheus.io/port: '9249'
+        prometheus.io/scrape: 'true'
       labels:
         app: flink
         component: taskmanager
