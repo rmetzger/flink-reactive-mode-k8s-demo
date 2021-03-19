@@ -56,7 +56,8 @@ public class DemoJob {
                 .setMaxParallelism(1)
                 .name("Throughput Logger");
 
-        stream.map(new CPULoadMapper(params))
+        stream.rebalance()
+                .map(new CPULoadMapper(params))
                 .name("Expensive Computation")
                 .addSink(new DiscardingSink<>())
                 .name("Sink")

@@ -51,14 +51,34 @@ public class DataGen {
         producerThread.start();
 
         System.out.println("Kafka Producer started.");
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        while (true) {
-            System.out.println("Enter new sleep:");
-            String line = br.readLine();
-            System.out.println("Read " + line);
-            if (!line.isEmpty()) {
-                sleepEvery.set(Long.parseLong(line));
-            }
+
+        switch (args[3]) {
+            case "manual":
+                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+                while (true) {
+                    System.out.println("Enter new sleep:");
+                    String line = br.readLine();
+                    System.out.println("Read " + line);
+                    if (!line.isEmpty()) {
+                        sleepEvery.set(Long.parseLong(line));
+                    }
+                }
+            case "cos":
+                long median = 50_000L;
+                long current;
+                double in = -3;
+                int i = 0;
+
+                while (true) {
+                    current = median + (long) (median * Math.cos(in));
+                    sleepEvery.set(current);
+                    in += 0.04;
+                    System.out.println("At time " + (i++) + " Setting current " + current);
+                    Thread.sleep(60 * 1000L); // once per minute.
+                }
+
+            default:
+                throw new IllegalArgumentException("unexpected mode " + args[3]);
         }
     }
 }
