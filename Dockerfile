@@ -1,3 +1,3 @@
-FROM rmetzger/flink:1.13.0-reactive-timeouts-v2-57d9b95fac95a649bd8295c294b77aeee5df12fc
+FROM apache/flink:1.13.0
 
 COPY reactive-mode-demo-jobs/target/reactive-mode-demo-jobs-1.0-SNAPSHOT.jar /opt/flink/usrlib/reactive-mode-demo-jobs-1.0-SNAPSHOT.jar

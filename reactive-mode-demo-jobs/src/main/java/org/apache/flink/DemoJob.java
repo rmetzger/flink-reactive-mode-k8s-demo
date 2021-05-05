@@ -80,6 +80,9 @@ public class DemoJob {
                 LOG.info("Received message " + s);
                 firstMessage = true;
             }
+            if (s.equals("fail")) {
+                throw new RuntimeException("Artificial failure");
+            }
             double res = 0;
             for (int i = 0; i < params.getInt("iterations", 500); i++) {
                 res += Math.sin(StrictMath.cos(res)) * 2;

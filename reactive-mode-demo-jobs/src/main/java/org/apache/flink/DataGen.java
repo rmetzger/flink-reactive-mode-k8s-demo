@@ -11,6 +11,8 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DataGen {
+    private static volatile boolean sendFailmessage = false;
+
     public static void main(String[] args) throws Exception {
         System.out.println("Args = " + Arrays.asList(args));
         final String topic = args[0];
@@ -29,9 +31,15 @@ public class DataGen {
                             Producer<String, String> producer = new KafkaProducer<>(props);
                             long i = 0;
                             while (true) {
-                                producer.send(
-                                        new ProducerRecord<>(
-                                                topic, Long.toString(i), Long.toString(i++)));
+                                if (sendFailmessage) {
+                                    producer.send(new ProducerRecord<>(topic, "fail", "fail"));
+                                    sendFailmessage = false;
+                                } else {
+                                    producer.send(
+                                            new ProducerRecord<>(
+                                                    topic, Long.toString(i), Long.toString(i++)));
+                                }
+
                                 if (i % sleepEvery.get() == 0) {
                                     System.out.println(
                                             "Sleep interval "
@@ -60,7 +68,11 @@ public class DataGen {
                     String line = br.readLine();
                     System.out.println("Read " + line);
                     if (!line.isEmpty()) {
-                        sleepEvery.set(Long.parseLong(line));
+                        if (line.equals("fail")) {
+                            sendFailmessage = true;
+                        } else {
+                            sleepEvery.set(Long.parseLong(line));
+                        }
                     }
                 }
             case "cos":

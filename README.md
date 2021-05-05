@@ -3,10 +3,10 @@
 
 ```
 # build image
-docker build -t rmetzger/flink:1.13.0-reactive-timeouts-d382d0429ce544fde89aa80b2b0e6f82f91eb991-topspeed .
+docker build -t rmetzger/flink:1.13.0-reactive-demo .
 
 # publish image
-docker push rmetzger/flink:1.13.0-reactive-timeouts-d382d0429ce544fde89aa80b2b0e6f82f91eb991-topspeed
+docker push rmetzger/flink:1.13.0-reactive-demo
 
 
 brew install minikube
@@ -81,7 +81,7 @@ git clone https://github.com/rmetzger/flink-reactive-mode-k8s-demo.git
 mvn clean install
 
 # run data generator
-mvn exec:java -Dexec.mainClass="org.apache.flink.DataGen" -Dexec.args="topic 1 kafka-service:9092"
+mvn exec:java -Dexec.mainClass="org.apache.flink.DataGen" -Dexec.args="topic 1 kafka-service:9092 [manual|cos]"
 
 # delete workbench
 kubectl delete pod workbench
@@ -104,6 +104,9 @@ kubectl port-forward grafana-5df66b4d87-rkd7n 3000
 
 
 # scales:
+# 1 taskmanager: 20000
+# 2 taskamangers: 25000
+# 4 taskmanagers: 45000
 # 3 taskmanagers: < 50000
 # 4 taskmanagers: 55000
 # 
