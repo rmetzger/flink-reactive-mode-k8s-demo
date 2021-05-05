@@ -19,6 +19,7 @@ data:
     metrics.reporter.prom.class: org.apache.flink.metrics.prometheus.PrometheusReporter
     heartbeat.timeout: 8000
     heartbeat.interval: 5000
+    rest.flamegraph.enabled: true
   log4j-console.properties: |+
     # This affects logging for both user code and Flink
     rootLogger.level = INFO
